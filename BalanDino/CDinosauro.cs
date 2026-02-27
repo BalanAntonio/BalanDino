@@ -12,11 +12,11 @@ namespace BalanDino
         CQueue<string> coda;
         CPila<string> pila;
         SemaphoreSlim mutex;
-        int altezza;
+        int altezzaMax;
         
         public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim s)
         {
-            coda = c; pila = p; altezza = a; mutex = s;
+            coda = c; pila = p; altezzaMax = a; mutex = s;
         }
 
         public async Task Lavora()
