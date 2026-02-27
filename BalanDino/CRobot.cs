@@ -19,10 +19,13 @@ namespace BalanDino
 
         public async Task Lavora()
         {
-            await Task.Delay(Random.Shared.Next(100, 1001));
-            await mutex.WaitAsync();
-            coda.Enqueue("qwertyuiop");
-            mutex.Release();
+            while (true)
+            {
+                await Task.Delay(Random.Shared.Next(100, 1001));
+                await mutex.WaitAsync();
+                coda.Enqueue("qwertyuiop");
+                mutex.Release();
+            }
         }
     }
 }

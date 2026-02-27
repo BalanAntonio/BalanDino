@@ -11,11 +11,30 @@ namespace BalanDino
     {
         CQueue<string> coda;
         CPila<string> pila;
+        SemaphoreSlim mutex;
         int altezza;
         
-        public CDinosauro(CQueue<string> c, CPila<string> p, int a)
+        public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim s)
         {
-            coda = c; pila = p; altezza = a;
+            coda = c; pila = p; altezza = a; mutex = s;
+        }
+
+        public async Task Lavora()
+        {
+            while (true)
+            {
+                await mutex.WaitAsync();
+                if (coda.IsEmpty()) { mutex.Release(); Task.Delay(200); }
+                else
+                {
+                    mutex.Release();
+                    Task.Delay(200);
+                    await mutex.WaitAsync();
+                    pila.Push(coda.Dequeue());
+                    mutex.Release();
+                }
+                
+            }
         }
     }
 }
