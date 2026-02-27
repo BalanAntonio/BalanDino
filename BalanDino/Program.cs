@@ -14,6 +14,8 @@ namespace BalanDino
             CDinosauro dinosauro = new CDinosauro(coda, pila, altezzaMax, mutex);
 
             robot.Lavora(); dinosauro.Lavora();
+
+            await Task.Delay(20000);
         }
     }
 }

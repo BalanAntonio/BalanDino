@@ -14,7 +14,7 @@ namespace BalanDino
 
         public CRobot(CQueue<string> c, SemaphoreSlim s)
         {
-            coda = c; mutex = mutex;
+            coda = c; mutex = s;
         }
 
         public async Task Lavora()
@@ -24,6 +24,7 @@ namespace BalanDino
                 await Task.Delay(Random.Shared.Next(100, 1001));
                 await mutex.WaitAsync();
                 coda.Enqueue("qwertyuiop");
+                Console.WriteLine("Pezzo aggiunto alla coda");
                 mutex.Release();
             }
         }
