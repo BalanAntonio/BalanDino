@@ -1,4 +1,4 @@
-﻿using BalanQueueStack;
+﻿using BalanStackQueue;
 namespace BalanDino
 {
     internal class Program
@@ -6,12 +6,14 @@ namespace BalanDino
         static async Task Main(string[] args)
         {
             int altezzaMax = 5;
-            SemaphoreSlim mutex = new SemaphoreSlim(1);
+            SemaphoreSlim mutexCoda = new SemaphoreSlim(1);
+            SemaphoreSlim mutexPila = new SemaphoreSlim(1);
+
             CQueue<string> coda = new CQueue<string>();
             CPila<string> pila = new CPila<string>();
 
-            CRobot robot = new CRobot(coda, mutex);
-            CDinosauro dinosauro = new CDinosauro(coda, pila, altezzaMax, mutex);
+            CRobot robot = new CRobot(coda, mutexCoda);
+            CDinosauro dinosauro = new CDinosauro(coda, pila, altezzaMax, mutexCoda, mutexPila);
 
             robot.Lavora(); dinosauro.Lavora();
 

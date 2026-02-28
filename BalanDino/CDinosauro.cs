@@ -1,4 +1,4 @@
-﻿using BalanQueueStack;
+﻿using BalanStackQueue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,38 +11,41 @@ namespace BalanDino
     {
         CQueue<string> coda;
         CPila<string> pila;
-        SemaphoreSlim mutex;
+        SemaphoreSlim mutexCoda;
+        SemaphoreSlim mutexPila;
         int altezzaMax, n;
         
-        public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim s)
+        public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim sC, SemaphoreSlim sP)
         {
-            coda = c; pila = p; altezzaMax = a; mutex = s; n = 0;
+            coda = c; pila = p; altezzaMax = a; mutexCoda = sC;mutexPila=sP ; n = 0;
         }
 
         public async Task Lavora()
         {
             while (true)
             {
-                await mutex.WaitAsync();
-                if (coda.IsEmpty()) { mutex.Release(); Task.Delay(200); }
+                await mutexCoda.WaitAsync();
+                if (coda.IsEmpty()) { mutexCoda.Release(); Task.Delay(200); }
                 else
                 {
+                    mutexCoda.Release();
                     if (n >= altezzaMax)
                     {
-                        Console.WriteLine("Costruito pezzo");
+                        await mutexPila.WaitAsync();
+                        Console.WriteLine("Costruito portale");
                         for(int i = 0; i < n; i++)
                         {
                             pila.Pop();
                         }
                         n = 0;
+                        mutexPila.Release();
                     }
-                    mutex.Release();
                     Task.Delay(200);
-                    await mutex.WaitAsync();
+                    await mutexPila.WaitAsync();
                     pila.Push(coda.Dequeue());
                     Console.WriteLine("Aggiunto pezzo alla pila");
                     n++;
-                    mutex.Release();
+                    mutexPila.Release();
                 }
                 
             }

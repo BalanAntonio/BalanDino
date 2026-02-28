@@ -1,4 +1,4 @@
-﻿using BalanQueueStack;
+﻿using BalanStackQueue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +10,11 @@ namespace BalanDino
     internal class CRobot
     {
         CQueue<string> coda;
-        SemaphoreSlim mutex;
+        SemaphoreSlim mutexCoda;
 
-        public CRobot(CQueue<string> c, SemaphoreSlim s)
+        public CRobot(CQueue<string> c, SemaphoreSlim sC)
         {
-            coda = c; mutex = s;
+            coda = c; mutexCoda = sC;
         }
 
         public async Task Lavora()
@@ -22,10 +22,10 @@ namespace BalanDino
             while (true)
             {
                 await Task.Delay(Random.Shared.Next(100, 1001));
-                await mutex.WaitAsync();
-                coda.Enqueue("qwertyuiop");
+                await mutexCoda.WaitAsync();
+                coda.Enqueue("pezzo");
                 Console.WriteLine("Pezzo aggiunto alla coda");
-                mutex.Release();
+                mutexCoda.Release();
             }
         }
     }
