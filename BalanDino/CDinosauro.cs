@@ -1,4 +1,4 @@
-﻿using BalanStackQueue;
+﻿using BalanQueueStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,12 @@ namespace BalanDino
         CPila<string> pila;
         SemaphoreSlim mutexCoda;
         SemaphoreSlim mutexPila;
-        int altezzaMax, n;
+        int altezzaMax;
+        Puntatore<int> n;
         
-        public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim sC, SemaphoreSlim sP)
+        public CDinosauro(CQueue<string> c, CPila<string> p, int a, SemaphoreSlim sC, SemaphoreSlim sP, Puntatore<int> P)
         {
-            coda = c; pila = p; altezzaMax = a; mutexCoda = sC;mutexPila=sP ; n = 0;
+            coda = c; pila = p; altezzaMax = a; mutexCoda = sC;mutexPila=sP ; n = P;
         }
 
         public async Task Lavora()
@@ -25,29 +26,41 @@ namespace BalanDino
             while (true)
             {
                 await mutexCoda.WaitAsync();
-                if (coda.IsEmpty()) { mutexCoda.Release(); Task.Delay(200); }
-                else
+                if (coda.IsEmpty())
                 {
                     mutexCoda.Release();
-                    if (n >= altezzaMax)
+                    await Task.Delay(200);
+                    continue;
+                }
+
+                string pezzo = coda.Dequeue();
+                mutexCoda.Release();
+
+                await mutexPila.WaitAsync();
+                try
+                {
+                    pila.Push(pezzo);
+                    n.setValore(n.getValore() + 1);
+                    Console.WriteLine("Aggiunto pezzo alla pila");
+
+                    if (n.getValore() >= altezzaMax)
                     {
-                        await mutexPila.WaitAsync();
                         Console.WriteLine("Costruito portale");
-                        for(int i = 0; i < n; i++)
+
+                        for (int i = 0; i < n.getValore(); i++)
                         {
                             pila.Pop();
                         }
-                        n = 0;
-                        mutexPila.Release();
+
+                        n.setValore(0);
                     }
-                    Task.Delay(200);
-                    await mutexPila.WaitAsync();
-                    pila.Push(coda.Dequeue());
-                    Console.WriteLine("Aggiunto pezzo alla pila");
-                    n++;
+                }
+                finally
+                {
                     mutexPila.Release();
                 }
-                
+
+                await Task.Delay(200);
             }
         }
     }
