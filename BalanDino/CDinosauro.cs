@@ -41,10 +41,12 @@ namespace BalanDino
                 {
                     pila.Push(pezzo);
                     n.setValore(n.getValore() + 1);
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Aggiunto pezzo alla pila");
 
                     if (n.getValore() >= altezzaMax)
                     {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine("Costruito portale");
 
                         for (int i = 0; i < n.getValore(); i++)

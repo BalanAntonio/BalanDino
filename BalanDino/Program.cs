@@ -5,7 +5,11 @@ namespace BalanDino
     {
         static async Task Main(string[] args)
         {
-            int altezzaMax = 5;
+            const int altezzaMax = 5;
+            const int nRobot     = 3;
+            const int nDino      = 2;
+
+
             SemaphoreSlim mutexCoda = new SemaphoreSlim(1);
             SemaphoreSlim mutexPila = new SemaphoreSlim(1);
 
@@ -14,17 +18,21 @@ namespace BalanDino
             CQueue<string> coda = new CQueue<string>();
             CPila<string> pila = new CPila<string>();
 
-            CRobot[] robot = new CRobot[3];
-            for (int i = 0; i < 3; i++)
+
+
+            CRobot[] robot = new CRobot[nRobot];
+            for (int i = 0; i < nRobot; i++)
             {
                 robot[i] = new CRobot(coda,mutexCoda);
                 robot[i].Lavora();
             }
 
-            CDinosauro[] dinosauri = new CDinosauro[2];
-            for (int i = 0; i < 2; i++)
+
+
+            CDinosauro[] dinosauri = new CDinosauro[nDino];
+            for (int i = 0; i < nDino; i++)
             {
-                dinosauri[i] = new CDinosauro(coda,pila,5,mutexCoda,mutexPila,N);
+                dinosauri[i] = new CDinosauro(coda,pila,altezzaMax,mutexCoda,mutexPila,N);
                 dinosauri[i].Lavora();
             }
 

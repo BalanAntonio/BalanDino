@@ -24,6 +24,7 @@ namespace BalanDino
                 await Task.Delay(Random.Shared.Next(100, 1001));
                 await mutexCoda.WaitAsync();
                 coda.Enqueue("pezzo");
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Pezzo aggiunto alla coda");
                 mutexCoda.Release();
             }
